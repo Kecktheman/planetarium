@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+@import "../../node_modules/bulma/bulma.sass";
+
+@import 'abstracts/colors';
+@import 'abstracts/fonts';
+@import 'abstracts/animations';
+
+@import 'index';
+@import 'buttons';
+
+:root {
+      --main-color: red;
+      --secundary-color: green;
+}

@@ -1,0 +1,41 @@
+.moon-wrapper {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 25px;
+	perspective: 15em;
+	perspective-origin: 50% calc(50% - 2em);
+
+	.scene {
+		position: relative;
+		transform-style: preserve-3d;
+	}
+	
+	.moon {
+		position: absolute;
+		top: 1em;
+	
+		width: 30em;
+		height: 30em;
+	
+		border-radius: 50%;
+	
+		box-shadow: 1px 1px 2rem #fff inset, 1px 0px 5rem #fff;
+			
+		transform: translate(-50%, -40%) rotateX(105deg);
+		
+		transition: all .35s ease-in-out;
+	
+		/*background-image: 
+			radial-gradient(#0000, #ddd),
+			repeating-conic-gradient(
+				from 45deg, 
+				#243b55 0deg 90deg,
+				#141e30 90deg 180deg);*/
+	
+		background-image: url('./textureMaps/moon_texture_map.jpg');
+	
+		background-size: 100%, 0 0;
+	}
+}

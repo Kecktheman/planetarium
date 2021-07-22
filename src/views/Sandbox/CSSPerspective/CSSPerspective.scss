@@ -1,0 +1,138 @@
+.cssPerspective {
+	position: fixed;
+
+	top: 0; right: 0; bottom: 0; left: 0;
+
+	background-color: #000;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 50px;
+	
+	perspective: 10em;
+	perspective-origin: 50% calc(50% - 3em);
+
+	.scene {
+		position: relative;
+		transform-style: preserve-3d;
+
+		&.rotate {
+			animation: rotate 60s infinite linear;
+		}
+	}
+	
+	.ball {
+		position: absolute;
+		top: -2.1rem; left: 10rem;
+	
+		width: 5rem;
+		height: 5rem;
+	
+		border-radius: 50%;
+	
+		background: radial-gradient(circle at 100px 100px, #5cabff, #000);
+	
+		.shadow {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
+			transform: rotateX(90deg) translateZ(-150px);
+			z-index: -1;
+		  }
+	}
+	
+	.redbox {
+		position: absolute;
+		top: -2.1em;
+		left: -1.5em;
+		
+		width: 3em;
+		height: 3em;
+		
+		background-color: unset;
+
+		//transform-style: preserve-3d;
+		transition: all .15s ease-in-out;
+
+		.front, .right, .left, .back {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(120, 10, 10, .2);
+			box-shadow: 0 0 0.5em #000a inset;
+		}
+		
+		.front { transform: translateZ(1.5em) }
+		.right { transform: rotateY(90deg) translateZ(1.5em) }
+		.back { transform: rotateY(180deg) translateZ(1.5em) }
+		.left { transform: rotateY(270deg) translateZ(1.5em) }
+	
+		.top {
+			position: absolute;
+			width: 3em;
+			height: 3em;
+			background-color: rgba(120, 10, 10, .2);
+			transform: translateY(-50%) rotateX(90deg);
+			box-shadow: 0 0 0.5em #000a inset;
+		}
+		
+		.bottom {
+			position: absolute;
+			width: 3em;
+			height: 3em;
+			bottom: 0;
+			background: #0007;
+			transform: translateY(50%) rotateX(90deg);
+			box-shadow: 0 0 0.5em #000;
+		}
+		
+		&:hover  {
+			* {	background-color: rgba(255,255,255, .1) }
+		}
+	}
+	
+	.floor {
+		position: absolute;
+		top: 1em;
+	
+		width: 15em;
+		height: 15em;
+	
+		box-shadow: 1px 1px 30rem #000 inset;
+			
+		transform: translate(-50%, -50%) rotateX(90deg);
+		
+		background-image: 
+			radial-gradient(#0000, #000),
+			repeating-conic-gradient(
+				from 45deg, 
+				#333 0deg 90deg,
+				#444 90deg 180deg);
+		background-size: 100%, 10em 10em;
+
+	}
+	
+	h2 {
+		position: absolute;
+		top: -1em;
+
+		font-size: 2.5em;
+		background: linear-gradient(to right, rgb(0, 210, 255), rgb(58, 123, 213));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+
+		animation: rotate 30s infinite linear;
+		transform-style: preserve-3d;
+
+		&.left { left: -20rem }
+
+		&.right { right: -23rem }
+	}
+
+	@keyframes rotate {
+		to { transform: rotateY(360deg) }
+	}
+}
+

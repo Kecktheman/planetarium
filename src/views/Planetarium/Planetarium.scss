@@ -1,0 +1,63 @@
+.threejs {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+}
+
+.modal {
+      position: fixed;
+      top: unset;
+      bottom: 2rem;
+      left: 0;
+
+      .modal-card {
+            width: clamp(350px, 25%, 400px);
+            margin: 0 auto 0 2rem;
+
+            .modal-card-body {
+                  max-height: 500px;
+                  transition: all .3s ease-in-out;
+                  overflow-y: hidden;
+
+                  &.hide {
+                        max-height: 0px;
+                  }
+            }
+      }
+
+      label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+      }
+
+      input {
+          text-align: center;
+            &.small {
+                 width: 50px;
+            }
+      }
+}
+
+.hide-moon {
+      .moon {
+            transform: translate(-50%, -10%) rotateX(105deg);
+            opacity: 0;
+      }
+}
+
+.refrence-link {
+      position: fixed;
+      right: 2rem;
+      bottom: 2rem;
+      z-index: 41;
+
+      color: #fff;
+      font-size: .8rem;
+}
+
+.button {
+     font-weight: 700;
+}
