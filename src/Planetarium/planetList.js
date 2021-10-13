@@ -5,6 +5,8 @@ import earth_image from './textureMaps/2k_earth_daymap.jpg'
 import mars_image from './textureMaps/mars_texture_map.jpg'
 import jupiter_image from './textureMaps/jupiter_texture_map.jpg'
 import saturn_image from './textureMaps/saturn_texture_map.jpg'
+// import saturn_ring_image from './textureMaps/2k_saturn_ring_alpha.png'
+import saturn_ring_image from './textureMaps/saturn_ring_alpha_round.png'
 import uranus_image from './textureMaps/uranus_texture_map.jpg'
 import neptune_image from './textureMaps/neptune_texture_map.jpg'
 
@@ -34,7 +36,7 @@ const planetList = [
         rotationScale: 1,
         image: earth_image,
         clouds: {
-            scale: 1.005,
+            scale: 1.01,
             image: earth_cloudMap,
         },
     },
@@ -58,6 +60,11 @@ const planetList = [
         scale: 9.45,
         rotationScale: 0.444,
         image: saturn_image,
+        ring: {
+            scaleInnerRadius: 1.116,
+            scaleOuterRadius: 2.338,
+            image: saturn_ring_image,
+        },
     },
     {
         id: 7,

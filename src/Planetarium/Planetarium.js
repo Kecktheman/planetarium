@@ -12,7 +12,7 @@ export default function ThreeJS() {
     const { useRef, useEffect, useState } = React
     const [animating] = useState(true)
     const [lighting, setLighting] = useState(true)
-    const [planet, setPlanet] = useState(3)
+    const [planet, setPlanet] = useState(6)
     const [manualDistance, setManualDistance] = useState(false)
     const [distance, setDistance] = useState(0)
 

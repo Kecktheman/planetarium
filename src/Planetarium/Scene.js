@@ -8,7 +8,7 @@ const textureLoader = new THREE.TextureLoader()
 const earthMap = textureLoader.load(earth_normalMap)
 
 export default function Scene(props) {
-    const { useRef, useEffect, useState } = React
+    const { useEffect } = React
     const { mount, planetList, controls } = props
     const { animating } = props.settings
 
@@ -16,7 +16,6 @@ export default function Scene(props) {
 
     /* ThreeJS Hook */
     useEffect(() => {
-        console.log(mount)
         let width = mount.current.clientWidth
         let height = mount.current.clientHeight
         let frameId
@@ -28,8 +27,11 @@ export default function Scene(props) {
             0.1,
             1000,
         )
+        camera.position.z = 2
         const renderer = new THREE.WebGLRenderer({ antialias: true })
-        //const gui = new dat.GUI()
+        renderer.shadowMapEnabled = true
+        renderer.shadowMap = THREE.BasicShadowMap
+        const gui = new dat.GUI()
 
         const basePlanetRadius = 1
         const widthSegment = 100
@@ -43,18 +45,21 @@ export default function Scene(props) {
         planet.receiveShadow = true
         let loadedPlanet = null
 
+        //#region Planet clouds
         const cloudGeometry = new THREE.SphereGeometry(...defaultSize)
         const cloudMaterial = new THREE.MeshPhongMaterial({
             map: null,
-            opacity: 0.65,
+            opacity: 1,
             transparent: true,
+            specular: new THREE.Color('white'),
         })
-        cloudMaterial.color.setHSL(0, 0, 1)
+        cloudMaterial.color.setHSL(1, 1, 1)
         let planetClouds = new THREE.Mesh(cloudGeometry, cloudMaterial)
         planetClouds.receiveShadow = true
+        planetClouds.name = 'planetClouds'
+        //#endregion
 
-        scene.add(planet, planetClouds, camera)
-
+        scene.add(planet, camera)
         renderer.setClearColor('#141414')
         renderer.setSize(width, height)
 
@@ -99,15 +104,17 @@ export default function Scene(props) {
         }
         function getRandomZ() {
             // Only spawn stars behind the planet
-            var num = Math.floor(Math.random() * 10) - 10
+            var num = Math.random() * 10 - 10
             return num
         }
-        for (let i = 0; i < 250; i++) {
-            let geometry = new THREE.PlaneGeometry(0.02, 0.02)
+        for (let i = 0; i < 800; i++) {
+            let geometry = new THREE.PlaneGeometry(0.01, 0.01)
             let material = new THREE.MeshBasicMaterial({ color: 0xffffff })
             let star = new THREE.Mesh(geometry, material)
             star.position.set(getRandom(), getRandom(), getRandomZ())
             star.material.side = THREE.DoubleSide
+            star.material.depthTest = false
+            star.renderOrder = -1
             stars.push(star)
         }
         for (let j = 0; j < stars.length; j++) {
@@ -115,9 +122,9 @@ export default function Scene(props) {
         }
 
         // GUI
-        // gui.add(pointLight.position, 'x').min(-100).max(250).step(0.01)
-        // gui.add(pointLight.position, 'y').min(-100).max(250).step(0.01)
-        // gui.add(pointLight.position, 'z').min(-100).max(250).step(0.01)
+        gui.add(pointLight.position, 'x').min(-100).max(200).step(10)
+        gui.add(pointLight.position, 'y').min(-100).max(200).step(10)
+        gui.add(pointLight.position, 'z').min(-100).max(200).step(10)
 
         // Default rotation
         planet.rotation.x += 0.45
@@ -176,17 +183,13 @@ export default function Scene(props) {
 
         // const toggleDistance = (_distance) => (camera.position.z = _distance)
         const toggleDistance = (_distance) => {
-            // planet.position.z = _distance
-
             planet.position.z = -_distance
 
             let _planetClouds = scene.getObjectByName('planetClouds')
             if (_planetClouds) _planetClouds.position.z = -_distance
 
-            console.log(planet.position.z)
-            if (_planetClouds) console.log(_planetClouds.position.z)
-
-            // camera.position.z = _distance
+            let _planetRing = scene.getObjectByName('planetRing')
+            if (_planetRing) _planetRing.position.z = -_distance
         }
 
         let manualDistance = false
@@ -206,8 +209,10 @@ export default function Scene(props) {
                 additionalSunLights.forEach((light) => scene.add(light))
             else additionalSunLights?.forEach((light) => scene.remove(light))
 
+            // if (manualDistance == false)
+            //     camera.position.z = defaultCamperaPosition * _planet.scale
             if (manualDistance == false)
-                camera.position.z = defaultCamperaPosition * _planet.scale
+                planet.position.z = 0 - _planet.scale * 2
 
             let planetRotationHours = _planet.rotationScale
             let rotationSpeed = planetRotationHours * baseRotationSpeen
@@ -229,10 +234,48 @@ export default function Scene(props) {
                 cloudMaterial.map = THREE.ImageUtils.loadTexture(
                     _planet.clouds.image,
                 )
-                planetClouds.name = 'planetClouds'
                 planetClouds.position.z = planet.position.z
                 scene.add(planetClouds)
             } else scene.remove(planetClouds)
+
+            if (_planet.ring) {
+                //#region Planet ring
+                let planetRingGeometry = new THREE.RingGeometry(
+                    _planet.scale * _planet.ring.scaleInnerRadius,
+                    _planet.scale * _planet.ring.scaleOuterRadius,
+                    100,
+                    100,
+                    50,
+                    Math.PI * 2,
+                )
+                const planetRingMaterial = new THREE.MeshPhongMaterial({
+                    map: null,
+                    opacity: 0.8,
+                    transparent: true,
+                    specular: new THREE.Color('white'),
+                })
+                planetRingMaterial.side = THREE.DoubleSide
+                var planetRing = new THREE.Mesh(
+                    planetRingGeometry,
+                    planetRingMaterial,
+                )
+
+                planetRing.rotateX(1.8)
+
+                planetRing.receiveShadow = true
+                planetRing.name = 'planetRing'
+                //#endregion
+
+                planetRing.position.z = 0 - _planet.scale * 2
+                planetRingMaterial.map = THREE.ImageUtils.loadTexture(
+                    _planet.ring.image,
+                )
+                // console.log(planetRingGeometry.attributes)
+                scene.add(planetRing)
+            } else {
+                let planetRing = scene.getObjectByName('planetRing')
+                if (planetRing) scene.remove(planetRing)
+            }
         }
 
         mount.current.appendChild(renderer.domElement)
